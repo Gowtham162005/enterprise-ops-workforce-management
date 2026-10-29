@@ -189,7 +189,7 @@ public class Attendance {
         long hours = duration.toHours();
 
         long minutes =
-                duration.toMinutesPart();
+                (duration.toMinutes() % 60);
 
         return hours + "h " + minutes + "m";
     }

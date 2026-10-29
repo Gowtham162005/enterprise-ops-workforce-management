@@ -24,48 +24,46 @@ public class HibernateUtil {
         try {
             Properties properties = new Properties();
 
+            // Read database connection settings from Render environment variables
             properties.setProperty(
                 "hibernate.connection.driver_class",
                 "com.mysql.cj.jdbc.Driver"
             );
-
             properties.setProperty(
                 "hibernate.connection.url",
                 getRequiredEnv("DB_URL")
             );
-
             properties.setProperty(
                 "hibernate.connection.username",
                 getRequiredEnv("DB_USERNAME")
             );
-
             properties.setProperty(
                 "hibernate.connection.password",
                 getRequiredEnv("DB_PASSWORD")
             );
 
+            // Hibernate settings
             properties.setProperty(
                 "hibernate.dialect",
                 "org.hibernate.dialect.MariaDBDialect"
             );
-
             properties.setProperty("hibernate.show_sql", "true");
             properties.setProperty("hibernate.format_sql", "true");
             properties.setProperty("hibernate.hbm2ddl.auto", "validate");
 
             sessionFactory = new Configuration()
-                    .configure("hibernate.cfg.xml")
-                    .addProperties(properties)
-                    .addAnnotatedClass(Role.class)
-                    .addAnnotatedClass(User.class)
-                    .addAnnotatedClass(Department.class)
-                    .addAnnotatedClass(Employee.class)
-                    .addAnnotatedClass(Project.class)
-                    .addAnnotatedClass(Task.class)
-                    .addAnnotatedClass(LeaveRequest.class)
-                    .addAnnotatedClass(AuditLog.class)
-                    .addAnnotatedClass(Attendance.class)
-                    .buildSessionFactory();
+                .configure("hibernate.cfg.xml")
+                .addProperties(properties)
+                .addAnnotatedClass(Role.class)
+                .addAnnotatedClass(User.class)
+                .addAnnotatedClass(Department.class)
+                .addAnnotatedClass(Employee.class)
+                .addAnnotatedClass(Project.class)
+                .addAnnotatedClass(Task.class)
+                .addAnnotatedClass(LeaveRequest.class)
+                .addAnnotatedClass(AuditLog.class)
+                .addAnnotatedClass(Attendance.class)
+                .buildSessionFactory();
 
             System.out.println(
                 "Hibernate SessionFactory created successfully."
@@ -73,9 +71,17 @@ public class HibernateUtil {
 
         } catch (Throwable ex) {
             System.err.println(
-                "Hibernate SessionFactory creation failed."
+                "========== HIBERNATE INITIALIZATION ERROR =========="
             );
-            ex.printStackTrace();
+
+            ex.printStackTrace(System.err);
+
+            Throwable cause = ex.getCause();
+            while (cause != null) {
+                System.err.println("ROOT CAUSE: " + cause);
+                cause = cause.getCause();
+            }
+
             throw new ExceptionInInitializerError(ex);
         }
     }
@@ -93,6 +99,7 @@ public class HibernateUtil {
     }
 
     private HibernateUtil() {
+        // Prevent instantiation
     }
 
     public static SessionFactory getSessionFactory() {
@@ -100,7 +107,8 @@ public class HibernateUtil {
     }
 
     public static void shutdown() {
-        getSessionFactory().close();
+        if (sessionFactory != null && !sessionFactory.isClosed()) {
+            sessionFactory.close();
+        }
     }
 }
-

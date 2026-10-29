@@ -1,0 +1,341 @@
+
+<%@ page import="com.enterpriseops.model.User" %>
+<%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
+
+<%
+    String currentRole = "";
+    Object loggedInUser = session.getAttribute("loggedInUser");
+
+    if (loggedInUser instanceof User) {
+        User user = (User) loggedInUser;
+
+        if (user.getRole() != null && user.getRole().getName() != null) {
+            currentRole = user.getRole().getName()
+                    .trim()
+                    .toUpperCase(java.util.Locale.ROOT);
+        }
+    }
+
+    if (currentRole.isEmpty()) {
+        Object roleValue = session.getAttribute("role");
+
+        if (roleValue != null) {
+            currentRole = roleValue.toString()
+                    .trim()
+                    .toUpperCase(java.util.Locale.ROOT);
+        }
+    }
+
+    request.setAttribute("currentRole", currentRole);
+%>
+
+<style>
+    .sidebar,
+    .sidebar * {
+        box-sizing: border-box;
+    }
+
+    .sidebar {
+        position: fixed;
+        top: 0;
+        left: 0;
+        bottom: 0;
+        width: 240px;
+        background: #111827;
+        color: #fff;
+        z-index: 1000;
+        display: flex;
+        flex-direction: column;
+        overflow-x: hidden;
+        overflow-y: auto;
+        font-family: Arial, sans-serif;
+    }
+
+    .sidebar-brand {
+        padding: 24px 20px;
+        border-bottom: 1px solid #374151;
+        flex-shrink: 0;
+    }
+
+    .sidebar-brand h2 {
+        margin: 0;
+        font-size: 20px;
+        font-weight: 700;
+        color: #fff;
+    }
+
+    .sidebar-brand p {
+        margin: 5px 0 0;
+        color: #9ca3af;
+        font-size: 12px;
+    }
+
+    .sidebar-menu {
+        flex: 1 0 auto;
+        padding: 18px 12px;
+    }
+
+    .menu-section {
+        margin-bottom: 22px;
+    }
+
+    .menu-section-title {
+        padding: 0 10px 8px;
+        color: #9ca3af;
+        font-size: 11px;
+        font-weight: 700;
+        text-transform: uppercase;
+        letter-spacing: 0.08em;
+    }
+
+    .sidebar .menu-item,
+    .sidebar .logout-link {
+        display: block;
+        width: 100%;
+        padding: 11px 12px;
+        margin-bottom: 3px;
+        border-radius: 7px;
+        font-size: 14px;
+        line-height: 1.4;
+        text-decoration: none;
+        overflow-wrap: anywhere;
+    }
+
+    .sidebar .menu-item {
+        color: #d1d5db;
+    }
+
+    .sidebar .menu-item:hover {
+        background: #1f2937;
+        color: #fff;
+    }
+
+    .sidebar-footer {
+        margin-top: auto;
+        padding: 12px;
+        border-top: 1px solid #374151;
+        flex-shrink: 0;
+        background: #111827;
+    }
+
+    .sidebar .logout-link {
+        color: #fca5a5;
+        margin-bottom: 0;
+    }
+
+    .sidebar .logout-link:hover {
+        background: #7f1d1d;
+        color: #fff;
+    }
+
+    @media (max-width: 600px) {
+        .sidebar {
+            width: 220px;
+        }
+
+        .sidebar-brand {
+            padding: 20px 16px;
+        }
+
+        .sidebar-menu {
+            padding: 16px 10px;
+        }
+
+        .sidebar .menu-item,
+        .sidebar .logout-link {
+            padding: 10px;
+            font-size: 13px;
+        }
+    }
+</style>
+
+<aside class="sidebar">
+
+    <div class="sidebar-brand">
+        <h2>Enterprise Ops</h2>
+        <p>Workforce Management</p>
+    </div>
+
+    <nav class="sidebar-menu">
+
+        <c:choose>
+
+            <%-- ADMIN MENU --%>
+            <c:when test="${currentRole eq 'ADMIN'}">
+
+                <div class="menu-section">
+                    <div class="menu-section-title">Main</div>
+
+                    <a class="menu-item"
+                       href="${pageContext.request.contextPath}/dashboard">
+                        Dashboard
+                    </a>
+                </div>
+
+                <div class="menu-section">
+                    <div class="menu-section-title">Administration</div>
+
+                    <a class="menu-item"
+                       href="${pageContext.request.contextPath}/employees">
+                        Employees
+                    </a>
+
+                    <a class="menu-item"
+                       href="${pageContext.request.contextPath}/departments">
+                        Departments
+                    </a>
+
+                    <a class="menu-item"
+                       href="${pageContext.request.contextPath}/admin/managers">
+                        Manager Management
+                    </a>
+
+                    <a class="menu-item"
+                       href="${pageContext.request.contextPath}/projects">
+                        Projects
+                    </a>
+
+                    <a class="menu-item"
+                       href="${pageContext.request.contextPath}/leaves?action=list">
+                        Leave Management
+                    </a>
+
+                    <a class="menu-item"
+                       href="${pageContext.request.contextPath}/attendance">
+                        Attendance
+                    </a>
+
+                    <a class="menu-item"
+                       href="${pageContext.request.contextPath}/reports">
+                        Reports
+                    </a>
+
+                    <a class="menu-item"
+                       href="${pageContext.request.contextPath}/audit-logs">
+                        Audit Logs
+                    </a>
+                </div>
+
+            </c:when>
+
+            <%-- MANAGER MENU --%>
+            <c:when test="${currentRole eq 'MANAGER'}">
+
+                <div class="menu-section">
+                    <div class="menu-section-title">Main</div>
+
+                    <a class="menu-item"
+                       href="${pageContext.request.contextPath}/manager/dashboard">
+                        Dashboard
+                    </a>
+                </div>
+
+                <div class="menu-section">
+                    <div class="menu-section-title">Management</div>
+
+                    <a class="menu-item"
+                       href="${pageContext.request.contextPath}/manager/team">
+                        My Team
+                    </a>
+
+                    <a class="menu-item"
+                       href="${pageContext.request.contextPath}/manager/projects">
+                        My Projects
+                    </a>
+
+                    <a class="menu-item"
+                       href="${pageContext.request.contextPath}/manager/tasks">
+                        Task Management
+                    </a>
+                    
+                     <a class="menu-item"
+       href="${pageContext.request.contextPath}/leaves?action=add">
+        Apply Leave
+    </a>
+
+                    <a class="menu-item"
+                       href="${pageContext.request.contextPath}/manager/approvals">
+                        Leave Approval
+                    </a>
+                    
+                    
+
+                    <a class="menu-item"
+                       href="${pageContext.request.contextPath}/manager/attendance">
+                        Team Attendance
+                    </a>
+                </div>
+
+            </c:when>
+
+            <%-- EMPLOYEE MENU --%>
+            <c:when test="${currentRole eq 'EMPLOYEE'}">
+
+                <div class="menu-section">
+                    <div class="menu-section-title">Main</div>
+
+                    <a class="menu-item"
+                       href="${pageContext.request.contextPath}/employee/dashboard">
+                        Dashboard
+                    </a>
+                </div>
+
+                <div class="menu-section">
+                    <div class="menu-section-title">My Workspace</div>
+
+                    <a class="menu-item"
+                       href="${pageContext.request.contextPath}/profile">
+                        My Profile
+                    </a>
+
+                    <a class="menu-item"
+                       href="${pageContext.request.contextPath}/employee/projects">
+                        My Projects
+                    </a>
+
+                    <a class="menu-item"
+                       href="${pageContext.request.contextPath}/employee/tasks">
+                        My Tasks
+                    </a>
+
+                    <a class="menu-item"
+                       href="${pageContext.request.contextPath}/employee/attendance">
+                        My Attendance
+                    </a>
+
+                    <a class="menu-item"
+                       href="${pageContext.request.contextPath}/employee/leaves">
+                        Apply Leave
+                    </a>
+                </div>
+
+            </c:when>
+
+            <%-- UNKNOWN ROLE --%>
+            <c:otherwise>
+
+                <div class="menu-section">
+                    <div class="menu-section-title">Main</div>
+
+                    <a class="menu-item"
+                       href="${pageContext.request.contextPath}/login">
+                        Login
+                    </a>
+                </div>
+
+            </c:otherwise>
+
+        </c:choose>
+
+    </nav>
+
+    <c:if test="${not empty sessionScope.loggedInUser}">
+        <div class="sidebar-footer">
+            <a class="logout-link"
+               href="${pageContext.request.contextPath}/logout">
+                Logout
+            </a>
+        </div>
+    </c:if>
+
+</aside>

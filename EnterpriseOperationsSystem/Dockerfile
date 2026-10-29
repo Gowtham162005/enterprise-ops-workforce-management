@@ -11,8 +11,11 @@ COPY src ./src
 RUN apt-get update \
     && apt-get install -y maven \
     && mvn clean package -DskipTests \
-    && cp target/*.war /usr/local/tomcat/webapps/ROOT.war \
+    && cp target/enterprise-operations.war /usr/local/tomcat/webapps/ROOT.war \
     && rm -rf /var/lib/apt/lists/*
+
+# Configure Tomcat to use Render's assigned port
+RUN sed -i 's/port="8080"/port="${port}"/' /usr/local/tomcat/conf/server.xml
 
 EXPOSE 8080
 

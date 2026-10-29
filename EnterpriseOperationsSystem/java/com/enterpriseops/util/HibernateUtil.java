@@ -1,4 +1,4 @@
-```java
+
 package com.enterpriseops.util;
 
 import com.enterpriseops.model.Project;
@@ -103,4 +103,4 @@ public class HibernateUtil {
         getSessionFactory().close();
     }
 }
-```
+

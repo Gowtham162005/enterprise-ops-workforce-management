@@ -1,3 +1,4 @@
+
 <?xml version="1.0" encoding="UTF-8"?>
 
 <!DOCTYPE hibernate-configuration PUBLIC
@@ -5,48 +6,19 @@
         "http://hibernate.sourceforge.net/hibernate-configuration-3.0.dtd">
 
 <hibernate-configuration>
-
     <session-factory>
 
-        <!-- MySQL Driver -->
         <property name="hibernate.connection.driver_class">
             com.mysql.cj.jdbc.Driver
         </property>
 
-        <!-- Local MySQL Database -->
-        <property name="hibernate.connection.url">
-            jdbc:mysql://localhost:3306/enterprise_operations?useSSL=false&amp;allowPublicKeyRetrieval=true&amp;serverTimezone=UTC
-        </property>
-
-        <!-- MySQL Username -->
-        <property name="hibernate.connection.username">
-            root
-        </property>
-
-        <!-- MySQL Password -->
-        <property name="hibernate.connection.password">
-            root
-        </property>
-
-        <!-- Hibernate Dialect -->
         <property name="hibernate.dialect">
-            org.hibernate.dialect.MySQL8Dialect
+            org.hibernate.dialect.MariaDBDialect
         </property>
 
-        <!-- Show SQL in Eclipse Console -->
-        <property name="hibernate.show_sql">
-            true
-        </property>
-
-        <property name="hibernate.format_sql">
-            true
-        </property>
-
-        <!-- Check existing database structure -->
-        <property name="hibernate.hbm2ddl.auto">
-            validate
-        </property>
+        <property name="hibernate.show_sql">true</property>
+        <property name="hibernate.format_sql">true</property>
+        <property name="hibernate.hbm2ddl.auto">validate</property>
 
     </session-factory>
-
 </hibernate-configuration>

@@ -15,4 +15,4 @@ RUN apt-get update \
     && cp target/enterprise-operations.war /usr/local/tomcat/webapps/ROOT.war \
     && rm -rf /var/lib/apt/lists/*
 
-CMD ["sh", "-c", "sed -i '/<Connector port=\"8080\"/s/port=\"8080\"/port=\"'\"${PORT:-8080}\"'\"/' /usr/local/tomcat/conf/server.xml && catalina.sh run"]
+CMD ["sh", "-c", "sed -i 's/port=\"8005\"/port=\"-1\"/' /usr/local/tomcat/conf/server.xml && sed -i '/<Connector port=\"8080\"/s/port=\"8080\"/port=\"'\"${PORT:-8080}\"'\"/' /usr/local/tomcat/conf/server.xml && catalina.sh run"]
